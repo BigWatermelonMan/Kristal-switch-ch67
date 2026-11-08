@@ -1,3 +1,9 @@
+if love._os == "NX" then
+    DISCORD_RPC_AVAILABLE = false
+    DISCORD_RPC_INFO = "Discord RPC is unavailable on Nintendo Switch"
+    return
+end
+
 local ffi = require "ffi"
 
 local name = "discord-rpc"

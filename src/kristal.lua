@@ -287,7 +287,7 @@ function love.draw()
     Draw.reset()
     love.graphics.scale(Kristal.getGameScale())
 
-    if (not Kristal.Config["systemCursor"]) and (Kristal.Config["alwaysShowCursor"] or MOUSE_VISIBLE) and love.window then
+    if (not Kristal.Config["systemCursor"]) and (Kristal.Config["alwaysShowCursor"] or MOUSE_VISIBLE or Switch.cursorVisible()) and love.window then
         if Input.usingGamepad() then
             Draw.setColor(0, 0, 0, 0.5)
             love.graphics.circle("fill", Input.gamepad_cursor_x, Input.gamepad_cursor_y, Input.gamepad_cursor_size)
@@ -384,7 +384,7 @@ function love.update(dt)
     end
     BORDER_ALPHA = MathUtils.clamp(BORDER_ALPHA, 0, 1)
 
-    if MOUSE_VISIBLE then
+    if MOUSE_VISIBLE and not Switch.enabled() then
         local cursor_speed = (16 * (dt * 30))
         local thumb_x, thumb_y = Input.getLeftThumbstick()
         Input.gamepad_cursor_x = Input.gamepad_cursor_x + thumb_x * cursor_speed
@@ -401,6 +401,7 @@ function love.update(dt)
         )
     end
 
+    Switch.update(dt)
     LibTimer.update()
     Music.update()
     Assets.update()
@@ -478,6 +479,7 @@ function love.mousemoved(x, y, dx, dy, istouch)
 end
 
 function love.mousereleased(x, y, button, istouch, presses)
+    x, y = Input.getMousePosition(x, y)
     if Kristal.DebugSystem then
         Kristal.DebugSystem:onMouseReleased(x, y, button, istouch, presses)
     end
@@ -1889,7 +1891,7 @@ function Kristal.getDefaultConfig()
         loggerOnlyWarns = false
     }
 
-    return config
+    return Switch.defaults(config)
 end
 
 --- Called internally. Loads the saved user config, with default values.

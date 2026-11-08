@@ -1,3 +1,9 @@
+if love._os == "NX" then
+    HTTPS_AVAILABLE = false
+    HTTPS_INFO = "Desktop HTTPS shared libraries are unavailable on Nintendo Switch"
+    return
+end
+
 local ffi = require "ffi"
 
 local name = "https.so"

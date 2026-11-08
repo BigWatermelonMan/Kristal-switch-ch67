@@ -30,4 +30,12 @@ function love.conf(t)
     end
 
     t.externalstorage = true
+
+    if love._os == "NX" then
+        t.identity = "kristal-ch67"
+        t.window.width = 1280
+        t.window.height = 720
+        t.window.fullscreen = true
+        t.window.vsync = 1
+    end
 end

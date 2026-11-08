@@ -244,6 +244,7 @@ function Input.resetBinds(gamepad, mod_id)
             ["fast_forward"] = {},
             ["project_rebind"] = { "gamepad:x" },
         }
+        Switch.bindings(gamepad_bindings)
         if gamepad ~= true then TableUtils.merge(Input.key_bindings, key_bindings) end
         if gamepad ~= false then TableUtils.merge(Input.gamepad_bindings, gamepad_bindings) end
         return
@@ -327,7 +328,7 @@ function Input.resetBinds(gamepad, mod_id)
 
     if gamepad ~= false then
         Input.stray_gamepad_bindings = {}
-        Input.gamepad_bindings = {
+        Input.gamepad_bindings = Switch.bindings({
             ["up"] = { "gamepad:dpup", "gamepad:lsup" },
             ["down"] = { "gamepad:dpdown", "gamepad:lsdown" },
             ["left"] = { "gamepad:dpleft", "gamepad:lsleft" },
@@ -340,7 +341,7 @@ function Input.resetBinds(gamepad, mod_id)
             ["object_selector"] = {},
             ["fast_forward"] = {},
             ["project_rebind"] = { "gamepad:x" },
-        }
+        })
         for _, mod in ipairs(Kristal.Mods.getMods()) do
             if mod.keybinds then
                 for _, v in pairs(mod.keybinds) do
@@ -811,6 +812,7 @@ function love.joystickadded(joystick)
 end
 
 function love.joystickremoved(joystick)
+    Switch.removed(joystick)
     if Input.active_gamepad == joystick then
         Input.active_gamepad = nil
     end
@@ -820,12 +822,14 @@ function love.joystickremoved(joystick)
 end
 
 function love.gamepadpressed(joystick, button)
+    if Switch.pressed(joystick, button) then return end
     Input.active_gamepad = joystick
     Input.connected_gamepad = joystick
     Input.onKeyPressed("gamepad:" .. button, false)
 end
 
 function love.gamepadreleased(joystick, button)
+    if Switch.released(joystick, button) then return end
     Input.onKeyReleased("gamepad:" .. button)
 end
 
